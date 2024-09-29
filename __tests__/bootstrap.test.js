@@ -1,5 +1,5 @@
 import { v4, validate } from "uuid";
-import bootstrap from "../server/bootstrap";
+import bootstrap from "../server/src/bootstrap";
 
 const strapi = {
   db: {
