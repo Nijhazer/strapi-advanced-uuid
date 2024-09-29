@@ -18,8 +18,6 @@ jobs:
           node-version: "20.x"
       - name: Install dependencies
         run: yarn install
-      - name: Install peer dependencies
-        run: yarn npm-install-peers
       - name: Building package
         run: yarn build
       - name: Install semantic-release
