@@ -14,7 +14,6 @@ export const generateUUID = (format: string) => {
 const bootstrap = ({ strapi }: { strapi: Core.Strapi }) => {
   const { contentTypes } = strapi;
   const models = Object.keys(contentTypes).reduce((acc, key) => {
-    console.log('model check');
     const contentType = contentTypes[key];
 
     if (!key.startsWith("api")) return acc;
