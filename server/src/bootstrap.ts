@@ -1,6 +1,4 @@
-"use strict";
-
-import type { Strapi } from "@strapi/strapi";
+import type { Core } from '@strapi/strapi';
 import { v4 } from "uuid";
 import RandExp from "randexp";
 
@@ -13,7 +11,7 @@ export const generateUUID = (format: string) => {
   }
 };
 
-export default ({ strapi }: { strapi: Strapi }) => {
+const bootstrap = ({ strapi }: { strapi: Core.Strapi }) => {
   const { contentTypes } = strapi;
   const models = Object.keys(contentTypes).reduce((acc, key) => {
     const contentType = contentTypes[key];
@@ -63,3 +61,5 @@ export default ({ strapi }: { strapi: Strapi }) => {
     });
   }
 };
+
+export default bootstrap;

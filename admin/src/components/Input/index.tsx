@@ -1,25 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useIntl } from "react-intl";
 import styled from "styled-components";
-import { Refresh } from "@strapi/icons";
+import { ArrowClockwise } from "@strapi/icons";
 import { v4, validate } from "uuid";
-import {
-  Box,
-  Field,
-  FieldAction,
-  FieldError,
-  FieldHint,
-  FieldInput,
-  FieldLabel,
-  Stack,
-  Flex,
-} from "@strapi/design-system";
+import { Field } from "@strapi/design-system";
 import { generateUUID, validateUUID } from "../../utils/helpers";
 
-export const FieldActionWrapper = styled(FieldAction)`
+export const FieldActionStyling = styled.div`
   svg {
-    height: 1rem;
-    width: 1rem;
     path {
       fill: ${({ theme }) => theme.colors.neutral400};
     }
@@ -38,8 +26,7 @@ const Input = ({
   placeholder,
   disabled,
   error,
-  intlLabel,
-  labelAction,
+  label,
   name,
   onChange,
   value: initialValue = "",
@@ -49,8 +36,7 @@ const Input = ({
   placeholder: string;
   disabled: boolean;
   error: boolean;
-  intlLabel: any;
-  labelAction: string;
+  label: any;
   name: string;
   onChange(v: any): void;
   value: string;
@@ -95,55 +81,51 @@ const Input = ({
   }, [initialValue, attribute]);
 
   return (
-    <Box>
-      <Field
-        id={name}
-        name={name}
-        hint={description && formatMessage(description)}
-        error={
-          error ??
+    <Field.Root
+      id={name}
+      name={name}
+      hint={description && formatMessage(description)}
+      error={
+        error ??
           (invalidUUID
             ? formatMessage({
-                id: "uuid.form.field.error",
-                defaultMessage: "The UUID format is invalid.",
-              })
-            : null)
+              id: "uuid.form.field.error",
+              defaultMessage: "The UUID format is invalid.",
+            })
+          : null)
+      }
+    >
+      <Field.Label>{label}</Field.Label>
+      <Field.Input
+        type="text"
+        onChange={onChange}
+        placeholder={placeholder}
+        disabled={disabled || true}
+        required
+        value={initialValue}
+        ref={ref}
+        endAction={
+          !getRegenerateOption() && (
+            <FieldActionStyling>
+              <Field.Action
+                onClick={() => {
+                  const newUUID = generateNewUUID();
+                  onChange({ target: { value: newUUID, name } });
+                }}
+                label={formatMessage({
+                  id: "uuid.form.field.generate",
+                  defaultMessage: "Generate",
+                })}
+              >
+                <ArrowClockwise />
+              </Field.Action>
+            </FieldActionStyling>
+          )
         }
-      >
-        <Stack spacing={1}>
-          <Flex>
-            <FieldLabel>{formatMessage(intlLabel)}</FieldLabel>
-          </Flex>
-          <FieldInput
-            onChange={onChange}
-            labelAction={labelAction}
-            placeholder={placeholder}
-            disabled={disabled || true}
-            required
-            value={initialValue}
-            ref={ref}
-            endAction={
-              !getRegenerateOption() && (
-                <FieldActionWrapper
-                  onClick={() => {
-                    const newUUID = generateNewUUID();
-                    onChange({ target: { value: newUUID, name } });
-                  }}
-                  label={formatMessage({
-                    id: "uuid.form.field.generate",
-                    defaultMessage: "Generate",
-                  })}
-                >
-                  <Refresh />
-                </FieldActionWrapper>
-              )
-            }
-          />
-          <FieldHint />
-          <FieldError />
-        </Stack>
-      </Field>
-    </Box>
+      />
+      <Field.Hint />
+      <Field.Error />
+    </Field.Root>
   );
 };
 
